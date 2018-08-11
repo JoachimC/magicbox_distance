@@ -5,6 +5,7 @@ with open("README.md", "r") as fh:
 
 INSTALL_REQUIRES = [
     'geopy',
+    'numpy'
 ]
 
 setuptools.setup(name='magicbox_distance',

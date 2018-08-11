@@ -1,6 +1,9 @@
 # from https://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
+from functools import reduce
+
 from struct import unpack, error
 from enum import IntEnum
+from numpy import array_split
 
 
 class ShapeType(IntEnum):
@@ -19,8 +22,9 @@ SHAPE_TYPE_KEY = "shape type"
 # record attributes
 RECORD_NUMBER_KEY = "record number"
 CONTENT_LENGTH_KEY = "content length"
+PART_NUMBER_KEY = "part number"
+PARTS_KEY = "parts"
 POINTS_KEY = "points"
-PARTS_INDEXES_KEY = "part indexes"
 
 POINT_X_KEY = "x"
 POINT_Y_KEY = "y"
@@ -32,9 +36,7 @@ def load(filePath):
         check_file_header(file_header)
         try:
             while True:
-                record = read_record(f)
-                print(record[RECORD_NUMBER_KEY])
-                yield record
+                yield (read_record(f))
         except EOFError:
             pass
 
@@ -104,11 +106,11 @@ def read_poly_line(row_header, f):
 
     part_indexes = list(map(lambda _: read_part_index(f), range(number_of_parts)))
     points = list(map(lambda _: read_point(f), range(number_of_points)))
+    parts = make_parts(part_indexes, points)
 
     return {RECORD_NUMBER_KEY: row_header[RECORD_NUMBER_KEY],
             SHAPE_TYPE_KEY: shape_type,
-            PARTS_INDEXES_KEY: part_indexes,
-            POINTS_KEY: points}
+            PARTS_KEY: parts}
 
 
 def read_point(f):
@@ -119,4 +121,10 @@ def read_point(f):
 
 def read_part_index(f):
     part_index = unpack("<I", read_bytes_with_eof_check(f, 4))
-    return part_index
+    return part_index[0]
+
+
+def make_parts(part_indexes, points):
+    _, *point_sets = array_split(points, part_indexes)
+    result = list(map(lambda x: {PART_NUMBER_KEY: x[0] + 1, POINTS_KEY: x[1]}, enumerate(point_sets)))
+    return result
