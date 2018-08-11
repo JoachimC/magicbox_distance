@@ -1,6 +1,7 @@
 import unittest
 
-from magicbox_distance import geojson
+import magicbox_distance.geojson as geojson
+
 
 class TestLoadSchoolsExampleGeoJson(unittest.TestCase):
 
