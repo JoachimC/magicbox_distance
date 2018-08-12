@@ -1,4 +1,6 @@
 from struct import unpack
+
+from geopy import Point
 from numpy import array_split
 
 from magicbox_distance import shapefile
@@ -100,7 +102,7 @@ def read_poly_line(row_header, f):
 def read_point(f):
     point_raw = unpack("<dd", read_bytes_with_eof_check(f, 16))
     point_x, point_y = point_raw
-    return shapefile.create_point(point_x, point_y)
+    return Point(point_x, point_y)
 
 
 def read_part_index(f):

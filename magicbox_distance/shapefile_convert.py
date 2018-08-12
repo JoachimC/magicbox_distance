@@ -1,6 +1,8 @@
 import functools
-from magicbox_distance.shapefile import PARTS_KEY, POINTS_KEY, POINT_X_KEY, POINT_Y_KEY
-import magicbox_distance.distance as distance
+
+from magicbox_distance.distance import using_latitude_and_longitude
+from magicbox_distance.networkx_roads import START_KEY, END_KEY, DISTANCE_KEY, ID_KEY, create_road_id
+from magicbox_distance.shapefile import PARTS_KEY, POINTS_KEY
 
 
 def to_networkx_roads(shapefile_records):
@@ -14,14 +16,9 @@ def extract_parts(accumulated, this):
 
 
 def to_networkx_road(accumulated, points):
-    start = to_tuple(points[0])
-    end = to_tuple(points[-1])
-    points_as_tuples = list(map(to_tuple, points))
-    distance_km = functools.reduce(lambda x, y: x + y,
-                                   map(distance.using_latitude_and_longitude_in_km, points_as_tuples[1:], points_as_tuples[:-1]),
-                                   0)
-    return accumulated + [(start, end, distance_km)]
-
-
-def to_tuple(point):
-    return (point[POINT_Y_KEY], point[POINT_Y_KEY])
+    start = points[0]
+    end = points[-1]
+    distance = functools.reduce(lambda x, y: x + y,
+                                map(using_latitude_and_longitude, points[1:], points[:-1]),
+                                0)
+    return accumulated + [{ID_KEY: create_road_id(start, end), START_KEY: start, END_KEY: end, DISTANCE_KEY: distance, POINTS_KEY: points}]

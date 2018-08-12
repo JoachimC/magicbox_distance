@@ -1,3 +1,4 @@
 geopy>=1.14.0
 numpy>=1.15.0
 networkx>=2.1
+Pint>=0.8.1

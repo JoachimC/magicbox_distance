@@ -6,10 +6,11 @@ with open("README.md", "r") as fh:
 INSTALL_REQUIRES = [
     'geopy',
     'numpy',
-    'networkx'
+    'networkx',
+    'Pint'
 ]
 
-setuptools.setup(name='magicbox_distance',
+setuptools.setup(name='joachimc_magicbox_distance',
                  version='0.0.1',
                  description='measure distance between points of interest',
                  long_description=long_description,
