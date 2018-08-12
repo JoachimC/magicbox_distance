@@ -1,10 +1,8 @@
 from functools import reduce
 import networkx as nx
-from geopy import Point
 from geopy.distance import great_circle
 
-from magicbox_distance.networkx_roads import create_node_id, START_KEY, END_KEY, DISTANCE_KEY, \
-    create_road_id_from_node_ids, create_road_id_from_points
+from magicbox_distance.networkx_roads import create_node_id, START_KEY, END_KEY, DISTANCE_KEY
 from . import ureg
 
 
@@ -16,8 +14,8 @@ def using_roads(roads, first, second):
     if first == second: return 0 * ureg.kilometres
 
     MG = nx.MultiGraph()
-    weighted_edges = list(
-        map(lambda road: (create_node_id(road[START_KEY]), create_node_id(road[END_KEY]), road[DISTANCE_KEY]), roads))
+    weighted_edges = map(
+        lambda road: (create_node_id(road[START_KEY]), create_node_id(road[END_KEY]), road[DISTANCE_KEY]), roads)
     MG.add_weighted_edges_from(weighted_edges)
 
     path = nx.shortest_path(MG, create_node_id(first), create_node_id(second))
