@@ -1,6 +1,8 @@
 # from https://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
 
 ID_KEY = "id"
+START_ID_KEY = "id"
+END_ID_KEY = "id"
 START_KEY = "start"
 END_KEY = "end"
 DISTANCE_KEY = "distance"
