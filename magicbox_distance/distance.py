@@ -14,7 +14,7 @@ def using_roads(roads, first, second):
     if first == second: return 0 * ureg.kilometres
 
     MG = nx.MultiGraph()
-    weighted_edges = map(lambda road: (road[START_ID_KEY], road[END_ID_KEY], road[DISTANCE_KEY]), roads)
+    weighted_edges = [(road[START_ID_KEY], road[END_ID_KEY], road[DISTANCE_KEY]) for road in roads]
     MG.add_weighted_edges_from(weighted_edges)
 
     first_node_id = create_node_id(first)

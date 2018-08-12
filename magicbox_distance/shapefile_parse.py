@@ -92,8 +92,8 @@ def read_poly_line(row_header, f):
     number_of_points \
         = polyline_prefix_raw
 
-    part_indexes = list(map(lambda _: read_part_index(f), range(number_of_parts)))
-    points = list(map(lambda _: read_point(f), range(number_of_points)))
+    part_indexes = [read_part_index(f) for _ in range(number_of_parts)]
+    points = [read_point(f) for _ in range(number_of_points)]
     parts = make_parts(part_indexes, points)
 
     return shapefile.create_record(row_header[shapefile.RECORD_NUMBER_KEY], shape_type, parts)
@@ -112,7 +112,7 @@ def read_part_index(f):
 
 def make_parts(part_indexes, points):
     _, *point_sets = array_split(points, part_indexes)
-    result = list(map(lambda x: shapefile.create_part(x[0] + 1, x[1]), enumerate(point_sets)))
+    result = [shapefile.create_part(x[0] + 1, x[1]) for x in enumerate(point_sets)]
     return result
 
 
