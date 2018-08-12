@@ -15,8 +15,3 @@ right_isosceles_triangle_distance = distance.using_latitude_and_longitude(right_
 def create_right_isosceles_triangle(start, middle, end):
     parts = [shapefile.create_part(1, [start, middle, end])]
     return [shapefile.create_record(1, shapefile.ShapeType.POLYLINE, parts)]
-
-
-def create_zero_distance(start):
-    parts = [shapefile.create_part(1, [start, start])]
-    return [shapefile.create_record(1, shapefile.ShapeType.POLYLINE, parts)]
