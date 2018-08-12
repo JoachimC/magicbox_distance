@@ -17,19 +17,20 @@ def using_roads(roads, first, second):
     weighted_edges = map(lambda road: (road[START_ID_KEY], road[END_ID_KEY], road[DISTANCE_KEY]), roads)
     MG.add_weighted_edges_from(weighted_edges)
 
-    path = nx.shortest_path(MG, create_node_id(first), create_node_id(second))
+    first_node_id = create_node_id(first)
+    second_node_id = create_node_id(second)
+    path = nx.shortest_path(MG, first_node_id, second_node_id)
     distance = calculate_path_distance(roads, path)
     return distance
 
 
 def calculate_path_distance(roads, path):
     pairs = map(lambda x, y: (x, y), path[1:], path[:-1])
-    return reduce(lambda aggregate, pair: aggregate + find_road_distance(roads, pair), pairs, 0)
+    return reduce(lambda aggregate, pair: aggregate + find_road(roads, pair)[DISTANCE_KEY], pairs, 0)
 
 
-def find_road_distance(roads, pair):
-    first_matched_road = next(road for road in roads if is_match(road, pair))
-    return first_matched_road[DISTANCE_KEY]
+def find_road(roads, pair):
+    return next(road for road in roads if is_match(road, pair))
 
 
 def is_match(road, pair):

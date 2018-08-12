@@ -8,7 +8,7 @@ from magicbox_distance.shapefile import PARTS_KEY, POINTS_KEY
 
 def to_networkx_roads(shapefile_records):
     parts = functools.reduce(lambda accumulated, this: extract_parts(accumulated, this), shapefile_records, [])
-    points = list(map(lambda part: part[POINTS_KEY], parts))
+    points = map(lambda part: part[POINTS_KEY], parts)
     return functools.reduce(to_networkx_road, points, [])
 
 
