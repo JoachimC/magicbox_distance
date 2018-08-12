@@ -13,13 +13,13 @@ def using_latitude_and_longitude(first, second):
 def using_roads(roads, first, second):
     if first == second: return 0 * ureg.kilometres
 
-    MG = nx.MultiGraph()
+    MG = nx.DiGraph()
     weighted_edges = [(road[START_ID_KEY], road[END_ID_KEY], road[DISTANCE_KEY]) for road in roads]
     MG.add_weighted_edges_from(weighted_edges)
 
     first_node_id = create_node_id(first)
     second_node_id = create_node_id(second)
-    path = nx.shortest_path(MG, first_node_id, second_node_id)
+    path = nx.shortest_path(MG, source=first_node_id, target=second_node_id, weight="weight")
     distance = calculate_path_distance(roads, path)
     return distance
 

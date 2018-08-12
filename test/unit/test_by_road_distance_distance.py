@@ -59,13 +59,13 @@ class TestUsingRoads(unittest.TestCase):
 
     def create_three_edge_short_road(self, start, end):
         first_start = start
-        first_end = Point('%.1f' % ((start.latitude + end.latitude) * 0.2),
-                          '%.1f' % ((start.longitude + end.longitude) * 0.2))
+        first_end = Point('%.3f' % (((end.latitude - start.latitude) * 0.2) + start.latitude),
+                          '%.3f' % (((end.longitude - start.longitude) * 0.2) + start.longitude))
         first_road = data_factory.create_part(first_start, first_end)
 
         second_start = first_end
-        second_end = Point('%.1f' % ((start.latitude + end.latitude) * 0.8),
-                           '%.1f' % ((start.longitude + end.longitude) * 0.8))
+        second_end = Point('%.3f' % (((end.latitude - start.latitude) * 0.8) + start.latitude),
+                           '%.3f' % (((end.longitude - start.longitude) * 0.8) + start.longitude))
         second_road = data_factory.create_part(second_start, second_end)
 
         third_start = second_end
