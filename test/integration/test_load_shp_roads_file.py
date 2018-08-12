@@ -9,10 +9,14 @@ class TestLoadColumbiaRoads(unittest.TestCase):
     def test_load(self):
         # https://data.humdata.org/dataset/d8f6feda-6755-4e84-bd14-5c719bc5f37a (hotosm_col_roads_lines_shp.zip)
         roads_file = "/Users/joachim/Downloads/hotosm_col_roads_lines_shp/hotosm_col_roads_lines.shp"
-        roads = list(shapefile_parse.load(roads_file))
-        self.assertEqual(len(roads), 478321)
-        for road in roads:
-            self.assertEqual(road[shapefile.SHAPE_TYPE_KEY], shapefile.ShapeType.POLYLINE)
+        shapes = shapefile_parse.load(roads_file)
+
+        for index, shape in enumerate(shapes):
+            last_index = index
+            self.assertEqual(shape[shapefile.SHAPE_TYPE_KEY], shapefile.ShapeType.POLYLINE)
+
+        self.assertEqual(last_index + 1, 478321)
+
 
 if __name__ == '__main__':
     unittest.main()
