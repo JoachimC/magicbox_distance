@@ -28,7 +28,8 @@ def calculate_path_distance(roads, path):
 
 
 def find_road_distance(roads, pair):
-    return next(road for road in roads if is_match(road, pair))[DISTANCE_KEY]
+    first_matched_road = next(road for road in roads if is_match(road, pair))
+    return first_matched_road[DISTANCE_KEY]
 
 
 def is_match(road, pair):
