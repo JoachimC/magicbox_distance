@@ -2,7 +2,7 @@ import unittest
 
 from magicbox_distance import ureg
 import magicbox_distance.shapefile_convert as shapefile_convert
-import data_factory
+import test.unit.data_factory as data_factory
 
 from magicbox_distance.networkx_roads import START_KEY, END_KEY, DISTANCE_KEY
 

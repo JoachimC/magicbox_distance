@@ -4,7 +4,7 @@ from geopy import Point
 
 from magicbox_distance import ureg
 
-import data_factory
+import test.unit.data_factory as data_factory
 import magicbox_distance.distance as distance
 import magicbox_distance.shapefile_convert as shapefile_convert
 
@@ -85,6 +85,8 @@ class TestUsingRoads(unittest.TestCase):
 
         return [first_road, second_road]
 
+    def test_there_and_back(self):
+        self.assertTrue(False, "not implemented")
 
 if __name__ == '__main__':
     unittest.main()

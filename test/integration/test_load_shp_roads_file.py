@@ -1,7 +1,11 @@
 import unittest
 
-import magicbox_distance.shapefile as shapefile
+from magicbox_distance import ureg
+
+from geopy import Point
+
 import magicbox_distance.shapefile_parse as shapefile_parse
+from magicbox_distance import shapefile_convert, distance
 
 
 class TestLoadColumbiaRoads(unittest.TestCase):
@@ -11,11 +15,12 @@ class TestLoadColumbiaRoads(unittest.TestCase):
         roads_file = "/Users/joachim/Downloads/hotosm_col_roads_lines_shp/hotosm_col_roads_lines.shp"
         shapes = shapefile_parse.load(roads_file)
 
-        for index, shape in enumerate(shapes):
-            last_index = index
-            self.assertEqual(shape[shapefile.SHAPE_TYPE_KEY], shapefile.ShapeType.POLYLINE)
-
-        self.assertEqual(last_index + 1, 478321)
+        networkx = shapefile_convert.to_networkx_roads(shapes)
+        expected_distance = 0.17716759526992643 * ureg.kilometre
+        start = Point(-75.490017,+10.478256)
+        end = Point(-75.488535,+10.480564)
+        actual_distance = distance.using_roads(networkx, start, end)
+        self.assertEqual(actual_distance, expected_distance)
 
 
 if __name__ == '__main__':
