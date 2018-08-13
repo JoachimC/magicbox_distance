@@ -15,20 +15,30 @@ def using_roads(roads, first, second):
     if first == second: return 0 * ureg.kilometres
 
     t = time.time()
-    G = nx.DiGraph()
-    for road in roads:
-        G.add_edge(road[START_ID_KEY], road[END_ID_KEY], weight=road[DISTANCE_KEY])
+    G = load_graph(roads)
 
     print("loaded in {interval}".format(interval=time.time() - t))
     t = time.time()
 
+    distance = route(G, first, second)
+    print("routed in {interval}".format(interval=time.time() - t))
+
+    return distance
+
+
+def route(G, first, second):
     first_node_id = create_node_id(first)
     second_node_id = create_node_id(second)
     path = nx.shortest_path(G, source=first_node_id, target=second_node_id, weight="weight")
     distance = calculate_path_distance(G, path)
-    print("routed in {interval}".format(interval=time.time() - t))
-
     return distance
+
+
+def load_graph(roads):
+    G = nx.DiGraph()
+    for road in roads:
+        G.add_edge(road[START_ID_KEY], road[END_ID_KEY], weight=road[DISTANCE_KEY])
+    return G
 
 
 def calculate_path_distance(G, path):
