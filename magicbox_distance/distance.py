@@ -1,9 +1,8 @@
-import time
 from functools import reduce
 import networkx as nx
 from geopy.distance import great_circle
 
-from magicbox_distance.networkx_roads import create_node_id, START_KEY, END_KEY, DISTANCE_KEY, END_ID_KEY, START_ID_KEY
+from magicbox_distance.networkx_roads import create_node_id, DISTANCE_KEY, END_ID_KEY, START_ID_KEY
 from . import ureg
 
 
@@ -11,34 +10,21 @@ def using_latitude_and_longitude(first, second):
     return great_circle(first, second).kilometers * ureg.kilometres
 
 
-def using_roads(roads, first, second):
-    if first == second: return 0 * ureg.kilometres
-
-    t = time.time()
-    G = load_graph(roads)
-
-    print("loaded in {interval}".format(interval=time.time() - t))
-    t = time.time()
-
-    distance = route(G, first, second)
-    print("routed in {interval}".format(interval=time.time() - t))
-
-    return distance
+def load_graph(roads):
+    G = nx.Graph()
+    for road in roads:
+        G.add_edge(road[START_ID_KEY], road[END_ID_KEY], weight=road[DISTANCE_KEY].to(ureg.kilometres).magnitude)
+    return G
 
 
 def route(G, first, second):
+    if first == second: return 0 * ureg.kilometres
+
     first_node_id = create_node_id(first)
     second_node_id = create_node_id(second)
+
     path = nx.shortest_path(G, source=first_node_id, target=second_node_id, weight="weight")
-    distance = calculate_path_distance(G, path)
-    return distance
-
-
-def load_graph(roads):
-    G = nx.DiGraph()
-    for road in roads:
-        G.add_edge(road[START_ID_KEY], road[END_ID_KEY], weight=road[DISTANCE_KEY])
-    return G
+    return calculate_path_distance(G, path) * ureg.kilometres
 
 
 def calculate_path_distance(G, path):

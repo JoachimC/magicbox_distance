@@ -12,10 +12,10 @@ class TestShapeFileConvert(unittest.TestCase):
     middle = data_factory.right_angle_middle
     end = data_factory.right_angle_end
 
-    def test_simple_triangle(self):
+    def test_right_angle(self):
         road = data_factory.create_part(self.start, self.middle, self.end)
         shapefile = data_factory.create_shapefile([road])
-        networkx = shapefile_convert.to_networkx_roads(shapefile)
+        networkx = list(shapefile_convert.to_networkx_roads(shapefile))
 
         self.assertEqual(len(networkx), 1)
         self.assertEqual(networkx[0][START_KEY], self.start)
