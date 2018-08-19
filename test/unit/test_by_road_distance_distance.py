@@ -2,17 +2,17 @@ import unittest
 
 from geopy import Point
 
+import magicbox_distance.convert_shapefile_to_networkx_graph as convert
 from magicbox_distance import ureg
 
 import test.unit.data_factory as data_factory
 import magicbox_distance.distance as distance
-import magicbox_distance.shapefile_convert as shapefile_convert
 
 
 class TestUsingRoads(unittest.TestCase):
 
     def test_zero_distance(self):
-        actual_distance = distance.route([], data_factory.right_angle_start, data_factory.right_angle_start)
+        actual_distance = distance.using_route([], data_factory.right_angle_start, data_factory.right_angle_start)
         self.assertEqual(actual_distance, 0 * ureg.kilometres)
 
     def test_simple_triangle(self):
@@ -21,9 +21,9 @@ class TestUsingRoads(unittest.TestCase):
                                                      data_factory.right_angle_end)
         shapefile = data_factory.create_shapefile([right_angled_road])
 
-        networkx = shapefile_convert.to_networkx_roads(shapefile)
-        G = distance.load_graph(networkx)
-        actual_distance = distance.route(G, data_factory.right_angle_start, data_factory.right_angle_end)
+        networkx = convert._to_networkx_graph(shapefile)
+        G = convert.load_graph_from_shapefile_records(networkx)
+        actual_distance = distance.using_route(G, data_factory.right_angle_start, data_factory.right_angle_end)
 
         self.assertEqual(actual_distance, data_factory.right_angle_distance)
 
@@ -40,10 +40,10 @@ class TestUsingRoads(unittest.TestCase):
 
         shapefile = data_factory.create_shapefile([first_right_angled_road] + [second_right_angled_road])
 
-        networkx = shapefile_convert.to_networkx_roads(shapefile)
-        G = distance.load_graph(networkx)
+        networkx = convert._to_networkx_graph(shapefile)
+        G = convert.load_graph_from_shapefile_records(networkx)
 
-        actual_distance = distance.route(G, first_start, second_end)
+        actual_distance = distance.using_route(G, first_start, second_end)
 
         self.assertTrue(abs(actual_distance - (data_factory.right_angle_distance * 2)) < 1 * ureg.metre)
 
@@ -55,9 +55,9 @@ class TestUsingRoads(unittest.TestCase):
         roads = self.create_three_edge_short_road(start, end) + self.create_two_edge_long_road(start, end)
         shapefile = data_factory.create_shapefile(roads)
 
-        networkx = shapefile_convert.to_networkx_roads(shapefile)
-        G = distance.load_graph(networkx)
-        actual_distance = distance.route(G, start, end)
+        networkx = convert._to_networkx_graph(shapefile)
+        G = convert.load_graph_from_shapefile_records(networkx)
+        actual_distance = distance.using_route(G, start, end)
 
         self.assertTrue(abs(actual_distance - expected_distance) < 1 * ureg.metre)
 
@@ -95,13 +95,13 @@ class TestUsingRoads(unittest.TestCase):
                                                      data_factory.right_angle_end)
         shapefile = data_factory.create_shapefile([right_angled_road])
 
-        networkx = shapefile_convert.to_networkx_roads(shapefile)
-        G = distance.load_graph(networkx)
+        networkx = convert._to_networkx_graph(shapefile)
+        G = convert.load_graph_from_shapefile_records(networkx)
 
-        outward_distance = distance.route(G, data_factory.right_angle_start, data_factory.right_angle_end)
+        outward_distance = distance.using_route(G, data_factory.right_angle_start, data_factory.right_angle_end)
         self.assertEqual(outward_distance, data_factory.right_angle_distance)
 
-        inward_distance = distance.route(G, data_factory.right_angle_end, data_factory.right_angle_start)
+        inward_distance = distance.using_route(G, data_factory.right_angle_end, data_factory.right_angle_start)
         self.assertEqual(inward_distance, data_factory.right_angle_distance)
 
 
